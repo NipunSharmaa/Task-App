@@ -42,12 +42,15 @@ router.post("/newtask", async (req,res)=>{
     }
 
     try {
+        const userId= req.userId;
         const createdTask = await prisma.task.create({
             data: {
                 title,
                 description,
                 due_date,
-                priority
+                priority,
+                userId
+      
             }
         });
         res.status(201).json({
@@ -62,15 +65,16 @@ router.post("/newtask", async (req,res)=>{
 
 router.get("/alltasks",async (req,res)=>{
     
-    const {due_date,status, page, limit}= req.body;
+    const {priority,due_date}= req.body;
     const {take,skip}=req.query;
-    const id = req.userId;
+    
    
-   try {const alltasks= await prisma.task.findMany({
+   try {
+    const id = req.userId;
+    const alltasks= await prisma.task.findMany({
 
         where:{
             AND:[
-            {userId:id},
             {priority:priority},
             {due_date: new Date(due_date)},
             ]
@@ -84,7 +88,7 @@ router.get("/alltasks",async (req,res)=>{
     })
     return res.status(200).json(alltasks);
 }catch(err){
-
+    console.log(err);
     res.status(500).json({
         message:"Unable to get the task"
     })
@@ -93,14 +97,14 @@ router.get("/alltasks",async (req,res)=>{
 
 })
 
-router.put("updateTask", async (req,res)=>{
+router.put("/updateTask", async (req,res)=>{
 
 const {taskId,due_date}= req.body;
 
 
 try{
 
-    const status="TODO";
+    let status="TODO";
     const subtasks= await prisma.subTask.findMany({
         where :{
             taskId: taskId
@@ -112,7 +116,7 @@ try{
             count++;
         }
     }
-    if (count==array.length){
+    if (count==subtasks.length){
         status="DONO";
     }else if (count>0){
         status="IN_PROGRESS"
@@ -131,6 +135,7 @@ res.status(200).json({
     message:"Task updated successfully"
 })
 }catch(err){
+    console.log(err);
     res.status(500).json({
         message:"Unable to update"
     })

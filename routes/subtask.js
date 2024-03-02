@@ -10,10 +10,10 @@ router.use(authMiddleware);
 
 router.post("/newsubtask", async (req,res)=>{
 
-const userId= req.userId;
+
 const taskId= req.body.taskId;
 try{
-
+    const userId= req.userId;
     const subTask= await prisma.subTask.create({
         data:{
             taskId:taskId
@@ -39,11 +39,11 @@ catch(err){
 module.exports= router;
 
 router.get("/allSubTasks",async(req,res)=>{
-    const userId = req.userId;
+ 
     const taskId = req.body.taskId;
 
     try {
-        
+        const userId = req.userId;
         const task = await prisma.task.findUnique({
             where: {
                 id: taskId

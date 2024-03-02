@@ -3,13 +3,15 @@ const { PrismaClient } = require('@prisma/client');
 const prisma= new PrismaClient();
 const router = express.Router();
 const zod = require ("zod");
+const jwt = require("jsonwebtoken");
+
 const {authMiddleware}= require ("../middleware/authMiddleware")
 require("dotenv").config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const signupBody= zod.object({
-    phone : zod.string().length(10),
+    phone_number : zod.string().length(10),
     priority: zod.number()
 });
 
@@ -23,20 +25,27 @@ router.post("/signup", async (req,res)=>{
           .json({ message: "Incorrect inputs." });
       }
       try{
-     const user= await prisma.user.create({
-        phone_number:req.body.phone_number,
-        prority:req.body.priority
-     })
+        const user = await prisma.user.create({
+            data: {
+                phone_number: req.body.phone_number,
+                priority: req.body.priority,
+            }
+        });
 
+   
      const userId= user.id;
      const token= jwt.sign({userId}, JWT_SECRET);
      res.status(200).json({
         message:"User created successfully",
         token:token
      })
+    // res.json({
+    //     msg:"hi"
+    // })
     }catch(err){
+        console.log(err);
         res.status(500).json({
-            message:"Unable to signup"
+            message:"Error in signing up"
         })
     }
 
@@ -44,7 +53,7 @@ router.post("/signup", async (req,res)=>{
 
 const signinBody= zod.object({
     id: zod.number(),
-    phone : zod.string().length(10),
+    phone_number : zod.string().length(10),
     priority: zod.number()
 });
 
@@ -58,7 +67,7 @@ router.post("/signin", async (req,res)=>{
     }
 
     try{
-
+        const { id } = req.body;
       const user= prisma.user.findUnique({
         where:{
             id:id
@@ -77,6 +86,7 @@ router.post("/signin", async (req,res)=>{
         token:token
       })
     }catch(err){
+        console.log(err);
         res.status(500).json({
             message:"Unable to signin"
         })
