@@ -54,15 +54,15 @@ router.post("/newtask", async (req,res)=>{
             }
         });
         res.status(201).json({
-            message:"task created sunccessfully"
+            message:"task created successfully"
     });
     } catch (error) {
-        console.error("Error creating task:", error);
+       // console.error("Error creating task:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 });
 
-
+ 
 router.get("/alltasks",async (req,res)=>{
     
     const {priority,due_date}= req.body;
@@ -117,7 +117,7 @@ try{
         }
     }
     if (count==subtasks.length){
-        status="DONO";
+        status="DONE";
     }else if (count>0){
         status="IN_PROGRESS"
     }

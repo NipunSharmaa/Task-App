@@ -21,7 +21,7 @@ try{
 
    })
    res.status(200).json({
-    message:"User created successfully"
+    message:"Subtask created successfully"
    })
 }
 catch(err){
@@ -56,7 +56,7 @@ router.get("/allSubTasks",async(req,res)=>{
             })
         }else {
 
-            const subtasks= await prisma.subTask.findMany({
+            const subtasks= await prisma.task.findMany({
                 where:{
                     id:taskId
                 }
@@ -75,7 +75,7 @@ router.get("/allSubTasks",async(req,res)=>{
 })
 
 router.put("updateSubtask", async(req,res)=>{
-   const {id,status}= req.body.id;
+   const {id,status}= req.body;
 
    try {
         
@@ -90,7 +90,7 @@ router.put("updateSubtask", async(req,res)=>{
             message: "No subtask found for the id provided"
         })
     }
-    const subtaskUpdated= await prisma.task.update({
+    const subtaskUpdated= await prisma.subTask.update({
         where :{
             id:id,
         },

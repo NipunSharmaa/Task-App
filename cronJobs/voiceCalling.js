@@ -29,6 +29,10 @@ cron.schedule('0 0 * * *', async () => {
               where: { id: task.userId },
               orderBy: { priority: 'asc' },
           });
+          // we couldve used man to many relation btw tasks and users to get all the 
+          //users with that id and loop on to them after getting them in ascending order
+          //and pass the call to the next user based on the return value of makeTwilioVoiceCall function (true/false)
+          //for this the relation coudlve been one to many too, was not specified in the instructions. 
 
           if (user) {
             
@@ -38,7 +42,7 @@ cron.schedule('0 0 * * *', async () => {
                   
                   continue;
               } else {
-                  // If the call was successful (answered), break the loop
+               
                   break;
               }
           }

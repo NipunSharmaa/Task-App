@@ -13,9 +13,9 @@ const authMiddleware=  (req,res,next)=>{
         message:"Invalid headers of token"
     });
    }
-   //console.log(authHeader);
+   
    const token = authHeader.split(' ')[1];
-   //console.log(token);
+ 
 
    try {
 
